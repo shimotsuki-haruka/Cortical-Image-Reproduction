@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def load_data(files):#合并
     X_list = [np.load(f) for f in files]
@@ -35,7 +36,7 @@ def inspect_npy_file(file_path):
                     if data.ndim == 1:
                         print(data[:10], "...")
                     else:
-                        print(data[0], "...")
+                        print(data[40:60, 20:40], "...")
             else:
                 print("(空数组)")
         else:
@@ -52,6 +53,16 @@ def inspect_multiple_files(file_paths):
     for file_path in file_paths:
         inspect_npy_file(file_path)
 
+def visualize(X, frame_index, array_index):
+    if array_index == -1:
+        frame = X[frame_index, :, : ]
+    else:
+        frame = X[array_index][:, :, frame_index]
+    plt.imshow(frame, cmap='gray')
+    plt.title(f"Frame {frame_index}")
+    plt.colorbar()
+    plt.show()
+
 if __name__ == "__main__":
     file_paths = [
         'E:/GithubData/Cortical-Image-Reproduction/fluorodata/Adultvglut21pre1.npy',
@@ -59,9 +70,13 @@ if __name__ == "__main__":
     ]
     
     inspect_multiple_files(file_paths)
-    
+    jointed = []
     try:
+
         jointed, height, width = load_data(file_paths)
         print(f"\n成功加载 {len(jointed)} 个文件")
     except Exception as e:
         print(f"加载数据时出错: {e}")
+
+    visualize(jointed, 100, 1)
+

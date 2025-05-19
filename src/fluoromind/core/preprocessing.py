@@ -114,10 +114,10 @@ def debleaching(X: NDArray) -> NDArray:
     """
     # 时间序列索引
     time_indices = np.arange(X.shape[0]).reshape(-1, 1)
-
+    
     # 计算每个时间点的平均信号
     vmean = X.mean(axis=1, keepdims=True)
-
+    
     # 使用线性回归模型拟合时间与平均信号的关系
     model = LinearRegression()
     model.fit(time_indices, vmean)
