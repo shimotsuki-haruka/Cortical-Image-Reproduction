@@ -6,6 +6,7 @@ __author__: str = "Wu Muyun"
 # __license__: str = "MIT"
 
 from DataView import *
+from DataProcess import *
 
 __all__ = (
     # Add the main classes and functions that should be publicly available

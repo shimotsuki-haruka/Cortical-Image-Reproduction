@@ -1,4 +1,4 @@
-    import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import os
@@ -6,11 +6,10 @@ from scipy import stats
 from matplotlib.colors import LinearSegmentedColormap
 
 # 数据文件路径
-file_paths = {
-    'VGLUT2': 'D:/Fluoro/data/adult_vglut2/Adultvglut21pre1.npy',
-    'SOM': 'D:/Fluoro/data/adult_som/Adultsom2pre1.npy',
-    'VIP': 'D:/Fluoro/data/adult_vip/Adultvip1pre1.npy',
-    'PV': 'D:/Fluoro/data/adult_pv/Adultpv2pre5.npy'
+file_paths = {'VGLUT2': 'E:/GithubData/Cortical-Image-Reproduction/fluorodata/Adultvglut21pre1.npy',
+    #'SOM': 'D:/Fluoro/data/adult_som/Adultsom2pre1.npy',
+    #'VIP': 'D:/Fluoro/data/adult_vip/Adultvip1pre1.npy',
+    #'PV': 'D:/Fluoro/data/adult_pv/Adultpv2pre5.npy'
 }
 
 # 创建results目录（如果不存在）

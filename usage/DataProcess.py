@@ -84,12 +84,14 @@ def datapre(X):
     #X_filtered =  bandpass(X_gsr, low=0.1, high=14.5, fs=fs)  #[bandpass(X, low=0.1, high=14.5, fs=fs) for X in X_gsr]
 
     X_normalized =  NormalIntensity(X_corrected)
-    X_final = np.zeros((X_normalized.shape[0], height, width))
+    X_final = np.full((X_normalized.shape[0], height, width), np.inf)
     X_final[:, valid_pixel_mask] = X_normalized
     
     print(X_final.shape)
     visualize(X_final, 100, -1)
     PixelSignals([(X_corrected,100), (X_reshaped,100)], ['Corrected 100', "Reshaped 100"])
+    
+    return X_final
 
 if __name__ == "__main__":
 
