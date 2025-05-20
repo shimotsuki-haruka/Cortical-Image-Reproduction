@@ -5,6 +5,11 @@ from skimage.filters import threshold_otsu
 from sklearn.linear_model import LinearRegression
 from DataView import *
 
+file_paths = [
+        'E:/GithubData/Cortical-Image-Reproduction/fluorodata/Adultvglut21pre1.npy',
+        'E:/GithubData/Cortical-Image-Reproduction/fluorodata/Adultvglut21pre2.npy',
+    ]
+
 def MeanSignals(*signals, labels=None, title='Mean Signal Over Time'):
     plt.figure(figsize=(10, 4))
 
@@ -51,17 +56,17 @@ def NormalIntensity(X):
     pixel_index = 100
     pixel_signal = X[:, pixel_index]
 
-    print("\n像素", pixel_index, "的 20 分位数:", f0[pixel_index])
-    print("像素", pixel_index, "的 80 分位数:", f80[pixel_index])
-    print("最大值:", pixel_signal.max(), "时间点:", pixel_signal.argmax())
-    print("最小值:", pixel_signal.min(), "时间点:", pixel_signal.argmin(),"\n")
+    print("\npixel", pixel_index, "'s 20 percentile:", f0[pixel_index])
+    print("pixel", pixel_index, "'s 80 percentile:", f80[pixel_index])
+    print("Max:", pixel_signal.max(), "Time:", pixel_signal.argmax())
+    print("Min:", pixel_signal.min(), "Time:", pixel_signal.argmin(),"\n")
 
     X_normalized = (X - f0) / f0  
     pixel_signal = X_normalized[:, pixel_index]
 
-    print("归一化后像素", pixel_index, "信号:", X_normalized[:, pixel_index])
-    print("归一化最大值:", pixel_signal.max(), "时间点:", pixel_signal.argmax())
-    print("归一化最小值:", pixel_signal.min(), "时间点:", pixel_signal.argmin(),"\n")
+    print("Normalized pixel", pixel_index, "Signal:", X_normalized[:, pixel_index])
+    print("Normalized max:", pixel_signal.max(), "Time:", pixel_signal.argmax())
+    print("Normalized min:", pixel_signal.min(), "Time:", pixel_signal.argmin(),"\n")
 
     return X_normalized
 
@@ -70,42 +75,35 @@ def datapre(X):
     print(X_concat.shape)
     thresh = threshold_otsu(X_concat)
     valid_pixel_mask = (X_concat > thresh).any(axis=2)
-    print(f"[筛选后] 有效像素数: {np.sum(valid_pixel_mask)}")
+    print(f"Valid pixel count: {np.sum(valid_pixel_mask)}")
     print(valid_pixel_mask.shape)
 
     X_transposed = np.transpose(X_concat, (2, 0, 1)) 
     #X_reshaped = X_transposed.reshape(X_transposed.shape[0], -1)
     X_reshaped =  X_transposed[:, valid_pixel_mask]
-    print("合并后形状:", X_reshaped.shape)
+    print("Merged shape:", X_reshaped.shape)
     X_corrected = debleaching(X_reshaped)
     
 
-    #X_gsr = gsr(X_corrected)  #[gsr(X) for X in X_corrected]
-    #X_filtered =  bandpass(X_gsr, low=0.1, high=14.5, fs=fs)  #[bandpass(X, low=0.1, high=14.5, fs=fs) for X in X_gsr]
-
     X_normalized =  NormalIntensity(X_corrected)
-    X_final = np.full((X_normalized.shape[0], height, width), np.inf)
-    X_final[:, valid_pixel_mask] = X_normalized
+    X_filtered =  bandpass(X_normalized, low=0.1, high=14.5, fs=30)
+    X_final = np.full((X_filtered.shape[0], height, width), np.inf)
+    X_final[:, valid_pixel_mask] = X_filtered
     
     print(X_final.shape)
     visualize(X_final, 100, -1)
-    PixelSignals([(X_corrected,100), (X_reshaped,100)], ['Corrected 100', "Reshaped 100"])
+    PixelSignals([(X_filtered, 100)], ['Filtered 100'])
     
-    return X_final
+    return np.transpose(X_final, (1, 2, 0)) 
 
 if __name__ == "__main__":
-
-    file_paths = [
-        'E:/GithubData/Cortical-Image-Reproduction/fluorodata/Adultvglut21pre1.npy',
-        'E:/GithubData/Cortical-Image-Reproduction/fluorodata/Adultvglut21pre2.npy',
-    ]
 
     jointed = []
     try:
         jointed, height, width = load_data(file_paths)
-        print(f"\n成功加载 {len(jointed)} 个文件")
+        print(f"\nSuccessfully loaded {len(jointed)} file(s)")
     except Exception as e:
-        print(f"加载数据时出错: {e}")
+        print(f"Error: {e}")
     
     datapre(jointed)
 

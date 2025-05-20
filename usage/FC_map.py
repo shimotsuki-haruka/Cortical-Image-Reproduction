@@ -25,7 +25,7 @@ def load_sample_data():
 
 # 2. 加载脑区图
 def load_brain_map():
-    brain_map = plt.imread('D:/Fluoro/results/Overlay_Enhanced.png')
+    brain_map = plt.imread('E:/GithubData/Cortical-Image-Reproduction/BrainRegion.png')
     brain_height, brain_width = brain_map.shape[0], brain_map.shape[1]
     print(f"脑区图尺寸: {brain_height} x {brain_width}")
     return brain_map, brain_height, brain_width
